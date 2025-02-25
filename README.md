@@ -346,4 +346,94 @@ int main(){
     return 0;
 }
 ```    
+## Các tính chất trong OOP
+### Encapulation (Đóng gói)
+- Đây là khả năng đóng gói những dữ liệu quan trọng ảnh hưởng bao gồm cả thuộc tính và phương thức trong 1 class
+- Được thiết lập thông qua public, private, protected
+- Cung cấp các API trung gian để thao tác như getter, setter  
+
+Lợi ích: Giúp ngăn chăn truy cập trực tiếp từ bên ngoài vào những dữ liệu quan trọng giảm nguy cơ lỗi và bảo mật  
+Ví dụ:   
+```  
+class SinhVien {
+private:
+    string rank;
+    float dtb;
+public:
+    float dtoan;
+    float dvan;
+    string name;
+    SinhVien(string name, float dtoan, dvan) {
+        this->name = name;
+        this->dtoan = dtoan;
+        this->dvan = dvan;
+    }
+    ~SinhVien() {
+    }
+    float tinhDTB() {
+        dtb = (dtoan + dvan)/2;
+        return dtb;
+    }
+    string xepHang() {
+        if(dtb >= 8) {
+            rank = "Gioi";
+        } else if(dtb >= 6.5) {
+            rank = "Kha";
+        } else if(dtb >= 5) {
+            rank = "Trung binh";
+        } else {
+            rank = "Yeu";
+        }
+        return rank;
+    }
+};
+
+int main() {
+    SinhVien sv1("Lam", 6, 6);
+    cout << "Diem trung binh: " << sv1.tinhDTB() << endl;
+    cout << "Loai: " << sv1.xepHang() << endl;
+}
+```  
+### Inheritance (Kế thừa)
+- Đây là khả năng tái sử dụng lại các phương thức và thuộc tính từ class gốc từ các class con kế thừa từ nó, giúp ta tối ưu và rút gọn chương trình  
+
+Lợi ích: Cho phép tái sự dụng mã nguồn, giúp giảm thời gian và công sức viết lại code, dễ dàng mở rộng các tính năng mới bằng cách kế thừa, cung cấp 1 tính nhất quán khi các lớp con phải tuân thủ theo cấu trúc và hành vi của lớp gốc  
+
+Ví dụ:  
+```  
+class person {
+protected:
+    int tuoi;
+    string name;
+public:
+    person(string name, int tuoi) {
+        this->name = name;
+        this->tuoi = tuoi;
+    }
+    ~person() {}
+    void printInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << tuoi << endl;
+    }
+};
+    
+class hocsinh : public person {
+private:
+    string lop;
+public:
+    hocsinh(string name, int tuoi, string lop) : person(name, tuoi) {
+        this->lop = lop;
+    }
+    void printInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << tuoi << endl;
+        cout << "Class: " << lop << endl;
+    }
+};
+    
+int main() {
+    hocsinh hs("Lam", 10, "10A2");
+    hs.printInfo();
+}
+```  
 
