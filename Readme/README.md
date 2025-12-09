@@ -50,7 +50,7 @@ int main(){
     return 0;
 }
 ```  
-**Object** là 1 thực thể được khởi tạo từ 1 class -> khởi tạo giá trị cho thuộc tính và hoạt động của các 	phương thức.    
+**Object** là 1 thực thể được khởi tạo từ 1 class -> khởi tạo giá trị cho thuộc tính và hoạt động của các phương thức.  
 **Static object** tạo object trong class sử dung biến static hoặc con trỏ để khai báo.  
 ## Constructor & Destructor
 - Constructor: Hàm khởi tạo khi khởi tạo 1 object từ class thì hàm này sẽ được gọi, hàm khởi tạo trùng tên với class và không có kiểu trả về. Có thể có nhiều constructor  
