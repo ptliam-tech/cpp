@@ -11,7 +11,7 @@
 - Tránh stack overflow trong chip embedded  -> việc khai báo biến trong hàm cần đảm bảo bộ nhớ của ram, đệ quy
 
 ## Struct  
-- Struct padding: compiler cấp phát bộ nhớ tự động padding nếu bộ nhớ lẻ  
+- Struct padding: compiler cấp phát bộ nhớ tự động padding 
 ```  
 typedef struct {
     int a;
