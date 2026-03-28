@@ -439,6 +439,7 @@ void printBox(const Box& b) {
 - Đây là khả năng đóng gói những dữ liệu quan trọng ảnh hưởng bao gồm cả thuộc tính và phương thức trong 1 class
 - Được thiết lập thông qua public, private, protected
 - Cung cấp các API trung gian để thao tác như getter, setter  
+- *VD*: Xe máy có nút đề, tay ga, phanh -> Không cần biết bên trong có những gì vặn tay ga là thay đổi gì hoạt động như nào. Động cơ được đóng gói bên trong chỉ tương tác qua "giao diện" bên ngoài  
 
 Lợi ích: Giúp ngăn chăn truy cập trực tiếp từ bên ngoài vào những dữ liệu quan trọng giảm nguy cơ lỗi và bảo mật  
 Ví dụ:   
@@ -524,4 +525,31 @@ int main() {
     hs.printInfo();
 }
 ```  
+### Abtraction (Trừu tượng hóa)  
+- Ẩn chi tiết phức tạp, lộ ra những gì cần thiết  
+- *VD*: Khi gọi grab chỉ cần bấm đặt xe - không cần biết grab tính giá như nào, chọn tài xế ra sao, tối ưu route bằng thuật toán gì. Tương tác với phiên bản đơn giản hóa của hệ thống phức tạp  
+- Giấu đi chi tiết xử lý phức tạp -> public API với thông số cần cho bên trên sử dụng  
+![Abstraction](../Image/abstraction.png)  
+
+### Polymorphism (Đa hình)  
+- Ổ cắm điện ở nhà chấp nhận mọi thiết bị, không cần biết thiết bị nào miễn là phích cắm vừa -> đa hình cùng một "lỗ cắm" (interface) nhưng hành vi khác nhau tùy từng thiết bị  
+![Polymorphism](../Image/polymorphism.png)  
+
+![Use](../Image/usepolymorphism.png)  
+
+![OOP](../Image/oop.png)  
+
+## Khác biệt giữa inheritance và composition  
+
+- VD: Mở 1 quán cà phê, có cà phê đen là món gốc, kế thừa thêm cà phê sữa (kế thừa cà phê đen + sữa), cà phê sữa đá (kế thừa cà phê sữa + đá), cà phê sữa đá + trân châu rồ khác muốn cà phê đen + trân châu -> phải tạo class mới! Đây gọi là class explosion  
+
+![ClassExplosion](../Image/classexplosion.png)  
+
+- Composition - giải pháp linh hoạt: Thay vì kế thừa cà phê sữa đá trân châu, tạo ra hệ thống topping. Khách chọn: Cà phê đen + sữa + đá + trân châu. Muốn combo nào tự kết hợp  
+![Composition](../Image/composition.png)  
+
+![Compare](../Image/compare.png)  
+
+## Interface và abstract class  
+![FlowInterface](../Image/flowinterface.png)  
 
