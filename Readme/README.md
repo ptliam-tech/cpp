@@ -51,7 +51,57 @@ int main(){
 }
 ```  
 **Object** là 1 thực thể được khởi tạo từ 1 class -> khởi tạo giá trị cho thuộc tính và hoạt động của các phương thức.  
-**Static object** tạo object trong class sử dung biến static hoặc con trỏ để khai báo.  
+**Static object** tạo object trong class sử dung biến static hoặc con trỏ để khai báo. 
+## Reference  
+- Tham chiếu tới object (object references): References là một bí danh cho 1 biến/ object đã tồn tại  
+- So sánh reference và Pointer và value:  
+    - Reference: Không NULL, không đổi trỏ, an toàn hơn, dùng phổ biến để truyền tham số  
+    - Pointer: Có thể NULL, thay đổi được địa chỉ, dùng khi cần dynamic allocation  
+    - Value: Sao chép toàn bộ object, tốn bộ nhớ với object lớn  
+- Truyền object vào hàm bằng reference sẽ giúp tiết kiệm tài nguyên, tăng hiệu năng  
+- Dùng reference-to-const để bảo vệ dữ liệu khi chỉ đọc  
+- Cẩn thận: Không trả về reference tới biến cục bộ  
+- Lợi ích: cho những object lớn tránh copy tốn kém như value mà tránh null như pointer, có thể thay đổi giá trị gốc trong object  
+```  
+#include<iostream>
+
+struct BigObject {
+    int data[100000];
+}
+
+void processByRef(BigObject& obj) {
+    obj.data[0] = 1;
+    std::cout << "[processByRef] data[0] = " << obj.data[0] << " (thay đổi trực tiếp object gốc)\n";
+}
+
+void processByConstRef(const BigObject& obj) {
+    std::cout << "[processByConstRef] data[0] = " << obj.data[0] << " (chỉ đọc, không thay đổi)\n";
+}
+```  
+```  
+//Reference tới biến cục bộ
+#include <iostream>
+int& getLocalRef() {
+    int x = 100;
+    return x; //SAI! x bị hủy sau khi hàm kết thúc
+}
+```  
+```  
+//Reference dùng với getter const
+#include<iostream>
+class Person{
+    std::string name;
+public:
+    Person(const std::string& n) : name(n) {} // Khởi tạo trực tiếp biên thành viên, Bắt buộc dùng với các biến const, reference
+    const std::string& getName() const {return name;} // ĐỐi tượng const chỉ gọi được các hàm là const 
+};
+
+int main() {
+    Person p("Liam");
+    std::cout << p.getName() << "\n";
+    return 0;
+}
+```  
 ## Constructor & Destructor
 - Constructor: Hàm khởi tạo khi khởi tạo 1 object từ class thì hàm này sẽ được gọi, hàm khởi tạo trùng tên với class và không có kiểu trả về. Có thể có nhiều constructor  
     - Default constructor: không có tham số truyền vào
@@ -212,6 +262,13 @@ int main(){
 - Static property chỉ được cấp phát địa chỉ để sử dụng khi ta gán giá trị bên ngoài class (lúc này ta mới sử dụng được property này)
 - Chỉ có các static method mới được phép truy cập đến static property  
 - Static property là thể hiện của class có thể truy cập qua "class"::"var"  
+- Ứng dụng:  
+    - Đếm số object được tạo  
+    - Chia sẻ tài nguyên giữa các object  
+    - Singleton pattern  
+- Lưu ý:  
+    - Phải khai bso static variable bên ngoài class  
+    - Static member vẫn tuân thủ access modifier  
 
 Ví dụ: Ta sẽ dùng static property để lưu giá trị đếm, và truy cập nó thông qua static method.  
 ```  
@@ -345,7 +402,38 @@ int main(){
     Instrument myInstrument; //wrong 
     return 0;
 }
-```    
+```  
+## Class và friends  
+- Friend function: Hàm được quyền truy cập vào private, protected member của class  
+- Friend class: Mọi hàm thành viên của class đó đều là friend (toàn quyền truy cập)    
+- Ứng dụng: Khi cần truy cập dữ liệu riêng tư mà không muốn public getter/setter  
+- Lưu ý:  
+    - Lạm dụng friend sẽ phá vỡ tính đóng gói
+    - Nên dùng khi thực sự cần thiết(ví dụ: operation overload, debug, I/O)  
+```  
+#include <iostream>
+class Box {
+private:
+    int width;
+    int height;
+    friend void printBox(const Box&); // friend function
+    friend class Debug;
+public: 
+    Box(int w, int h) : width(w), height(h) {}
+}
+
+class Debug {
+    public void print(const Box&);
+}
+
+void Debug::print(const Box& b) {
+    ctd:cout << "Box: " << b.width << " x " << b.height << "\n";
+}
+
+void printBox(const Box& b) {
+    ctd:cout << "Box: " << b.width << " x " << b.height << "\n";
+}
+```  
 ## Các tính chất trong OOP
 ### Encapulation (Đóng gói)
 - Đây là khả năng đóng gói những dữ liệu quan trọng ảnh hưởng bao gồm cả thuộc tính và phương thức trong 1 class
