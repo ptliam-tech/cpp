@@ -5,6 +5,6 @@
 
 ## Access vs Visibility  
 
-- *Visibility*: Preprocessing * early compilation -> Can compilier see the name ?  
-- *Access*: Compilation -> Can you see this member ?  
+- **Visibility**: Preprocessing + early compilation -> Can compilier see the name ?  
+- **Access**: Compilation -> Can you see this member ?  
 
