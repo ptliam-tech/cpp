@@ -5,12 +5,12 @@ using namespace std;
 
 class BoxPrinter{
 public:
-    void printlength(Box box){
+    void printlength(Box& box){
         cout << "Length of the box: " << box.len << endl; // this is accessible because this class is friend class
     }
 };
 
-void printlength(Box box){
+void printlength(Box& box){
     cout << "Length of the box: " << box.len << endl; // this is accessible because this function is friend function
 }
 

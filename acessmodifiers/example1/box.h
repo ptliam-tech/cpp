@@ -1,7 +1,7 @@
 class Box{
 private: 
     int len;
-    friend void printlength(Box box); // this is friend function and it can access the private members of the class
+    friend void printlength(Box& box); // this is friend function and it can access the private members of the class
     friend class BoxPrinter; // this is friend class and it can access the private members of the class
 
 public:
