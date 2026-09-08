@@ -1,13 +1,29 @@
 #include <iostream>
+#include <memory>
 #include <string>
+
+// =====================================================================
+// Ứng dụng ĐÚNG của protected destructor (Herb Sutter, GotW #18):
+//
+//   "Base class destructor nên là:
+//      - public + virtual      (cho phép xóa đa hình qua Base*), HOẶC
+//      - protected + non-virtual (CẤM xóa qua Base*, không tốn vtable slot)"
+//
+// protected + non-virtual destructor nói lên ý định thiết kế:
+//   "IConnection chỉ là interface hành vi. Nó KHÔNG quản lý lifetime,
+//    KHÔNG ai được phép `delete` một IConnection*."
+// Việc hủy phải xảy ra khi biết kiểu cụ thể (TcpConnection), nơi
+// destructor là public virtual -> không rò rỉ, không UB.
+// =====================================================================
 
 class IConnection {
 public:
     virtual void send(const std::string& data) = 0;
     virtual bool isConnected() const = 0;
+
 protected:
-    virtual ~IConnection() = default;
-    friend class ConnectionManager;
+    // non-virtual + protected: client không delete được qua IConnection*
+    ~IConnection() = default;
 };
 
 class TcpConnection : public IConnection {
@@ -16,6 +32,7 @@ public:
         std::cout << "TCP connection created!\n";
     }
 
+    // public + virtual: xóa qua TcpConnection* (hoặc lớp con của nó) là hợp lệ
     ~TcpConnection() override {
         std::cout << "TCP connection destroyed!\n";
     }
@@ -29,28 +46,41 @@ public:
     }
 };
 
+// ---------------------------------------------------------------------
+// Factory: trả về ownership rõ ràng bằng smart pointer.
+// Không cần friend, không cần hàm destroyConnection() thủ công.
+// ---------------------------------------------------------------------
 class ConnectionManager {
 public:
-    IConnection* createConnection() {
-        return new TcpConnection();
+    // Cách 1: trả về kiểu cụ thể -> unique_ptr<TcpConnection> hủy bằng
+    // destructor public của TcpConnection.
+    std::unique_ptr<TcpConnection> createTcp() {
+        return std::make_unique<TcpConnection>();
     }
 
-    void destroyConnection(IConnection* connection) {
-        delete connection; // Được vì là hàm bạn
+    // Cách 2: handle đa hình bằng shared_ptr. Compile được DÙ destructor
+    // của IConnection là protected, vì shared_ptr "nhớ" deleter gắn với
+    // kiểu TcpConnection ngay lúc make_shared.
+    std::shared_ptr<IConnection> openConnection() {
+        return std::make_shared<TcpConnection>();
     }
 };
 
 int main() {
-
     ConnectionManager manager;
 
-    IConnection* connection = manager.createConnection();
+    // --- Dùng qua interface, ownership do smart pointer giữ ---
+    std::shared_ptr<IConnection> conn = manager.openConnection();
+    conn->send("Hello");
+    std::cout << "connected? " << std::boolalpha << conn->isConnected() << '\n';
+    // Hết scope: shared_ptr gọi ~TcpConnection() (đúng kiểu) -> an toàn.
 
-    connection->send("Hello");
-
-    //delete connection; // Error
-
-    manager.destroyConnection(connection);
+    // --- Những dòng dưới đây CỐ Ý không biên dịch được: đó là mục đích ---
+    // IConnection* raw = manager.openConnection().get();
+    // delete raw;                                  // ❌ ~IConnection() protected
+    // std::unique_ptr<IConnection> u =             // ❌ default_delete cần
+    //     std::make_unique<TcpConnection>();       //    gọi ~IConnection()
+    // IConnection local;                           // ❌ abstract + dtor protected
 
     return 0;
 }
