@@ -115,7 +115,8 @@ public:
 **INTERVIEW QUESTIONS:**    
 
 Q1: What is the difference between shallow copy and deep copy?  
-A1: - Shallow copy copies the pointer address (both objects share same memory).  
+A1:  
+    - Shallow copy copies the pointer address (both objects share same memory).  
     - Deep copy creates new memory and copies the actual values.  
     - Shallow copy causes problems with dynamic memory allocation.  
 
@@ -139,12 +140,10 @@ Q5: Can copy constructor be private?
 A5: Yes! Private copy constructor prevents copying of objects (useful for Singleton).  
 
 Q6: What is copy elision / RVO?  
-A6: - Return Value Optimization - compiler optimization that eliminates unnecessary  
-    - copy constructor calls when returning objects from functions.  
+A6: Return Value Optimization - compiler optimization that eliminates unnecessary copy constructor calls when returning objects from functions.    
 
 Q7: What is the Rule of Three?  
-A7: - If a class needs a custom destructor, copy constructor, or copy assignment  
-    - operator, it probably needs all three (related to resource management).  
+A7: If a class needs a custom destructor, copy constructor, or copy assignment operator, it probably needs all three (related to resource management).  
 
 ### Initialization List: Why more Efficient?  
 
