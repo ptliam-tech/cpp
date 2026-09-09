@@ -72,7 +72,7 @@ int main() {
     Box b1;  // Compiler-provided default constructor called (does nothing)
     // length and width have garbage values
     cout << "Box b1 before initialization: ";
-    // b1.display();  // Uncommenting this will show garbage values
+    b1.display();  // Uncommenting this will show garbage values
     
     b1.setDimensions(10, 20);
     cout << "Box b1 after initialization: ";

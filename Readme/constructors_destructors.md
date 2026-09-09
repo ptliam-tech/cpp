@@ -20,6 +20,132 @@
 
 ## Important notes  
 
+### Shallow copy and Deep copy constructor  
+
+**Compiler provided copy constructor (Shallow copy)**  
+```cpp  
+class Simple {
+private: 
+    int value;
+    std::string name;
+public:
+    Simple(int v, std::string n) {
+        value = v;
+        name = n;
+        cout << "Parameterized constructor called for " << name << std::endl;
+    }
+
+    // If you don't define copy constructor, compiler provide one
+    // it dóe MEMBERWISE COPY (shallow copy for pointers)
+
+    void display() {
+        std::cout << "Value: " << value << ", Name: " << name << std::endl;
+    }
+};
+```  
+
+**Problem of shallow copy**  
+```cpp  
+class Person {
+    int* age;
+public:
+    Person(int a) {
+        age = new int(a);
+    }
+    ~Person() {
+        delete[] age;
+    }
+};
+
+Person a(25);
+Person b = a; -> compiler copy pointer a.age -> [25] <- b.age
+
+delete age; // a
+delete age; // b -> lỗi
+```  
+
+**Deep copy with defined copy constructor**  
+```cpp  
+class DeepCopyExample {
+private:
+    int *ptr;
+    int size;
+
+public:
+    DeepCopyExample(int s) {
+        size = s;
+        ptr = new int[size];
+        for(int i = 0; i < size; i++) {
+            ptr[i] = i + 1;
+        }
+        cout << "Constructor: Memory allocated at " << ptr << endl;
+    }
+
+    // Deep Copy Constructor - Creates NEW memory
+    DeepCopyExample(const DeepCopyExample &obj) {
+        size = obj.size;
+        ptr = new int[size];  // Allocate NEW memory
+        for(int i = 0; i < size; i++) {
+            ptr[i] = obj.ptr[i];  // Copy values
+        }
+        cout << "Copy Constructor: New memory allocated at " << ptr << endl;
+    }
+
+    void display() {
+        cout << "Array at " << ptr << ": ";
+        for(int i = 0; i < size; i++) {
+            cout << ptr[i] << " ";
+        }
+        cout << endl;
+    }
+
+    void modify(int index, int value) {
+        if(index < size) {
+            ptr[index] = value;
+        }
+    }
+
+    ~DeepCopyExample() {
+        cout << "Destructor: Deleting memory at " << ptr << endl;
+        delete[] ptr;
+    }
+};
+```  
+
+**INTERVIEW QUESTIONS:**    
+
+Q1: What is the difference between shallow copy and deep copy?  
+A1: - Shallow copy copies the pointer address (both objects share same memory).  
+    - Deep copy creates new memory and copies the actual values.  
+    - Shallow copy causes problems with dynamic memory allocation.  
+
+Q2: When should you define your own copy constructor?  
+A2: When the class has:  
+    - Dynamic memory allocation (pointers)  
+    - File handles  
+    - Network connections  
+    - Any resource that needs special handling  
+
+Q3: Why do we pass object by reference (const &) in copy constructor?  
+A3: - To avoid infinite recursion (passing by value would call copy constructor)  
+    - 'const' ensures original object is not modified  
+    - Reference avoids making another copy  
+
+Q4: What happens if you don't define a copy constructor?  
+A4: - Compiler provides a default copy constructor that does memberwise shallow copy.  
+    - This is fine for classes without pointers, but dangerous with dynamic memory.  
+
+Q5: Can copy constructor be private?  
+A5: Yes! Private copy constructor prevents copying of objects (useful for Singleton).  
+
+Q6: What is copy elision / RVO?  
+A6: - Return Value Optimization - compiler optimization that eliminates unnecessary  
+    - copy constructor calls when returning objects from functions.  
+
+Q7: What is the Rule of Three?  
+A7: - If a class needs a custom destructor, copy constructor, or copy assignment  
+    - operator, it probably needs all three (related to resource management).  
+
 ### Initialization List: Why more Efficient?  
 
 #### Performance Comparison  
