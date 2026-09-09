@@ -2,20 +2,6 @@
 #include <memory>
 #include <string>
 
-// =====================================================================
-// Ứng dụng ĐÚNG của protected destructor (Herb Sutter, GotW #18):
-//
-//   "Base class destructor nên là:
-//      - public + virtual      (cho phép xóa đa hình qua Base*), HOẶC
-//      - protected + non-virtual (CẤM xóa qua Base*, không tốn vtable slot)"
-//
-// protected + non-virtual destructor nói lên ý định thiết kế:
-//   "IConnection chỉ là interface hành vi. Nó KHÔNG quản lý lifetime,
-//    KHÔNG ai được phép `delete` một IConnection*."
-// Việc hủy phải xảy ra khi biết kiểu cụ thể (TcpConnection), nơi
-// destructor là public virtual -> không rò rỉ, không UB.
-// =====================================================================
-
 class IConnection {
 public:
     virtual void send(const std::string& data) = 0;
@@ -33,7 +19,7 @@ public:
     }
 
     // public + virtual: xóa qua TcpConnection* (hoặc lớp con của nó) là hợp lệ
-    ~TcpConnection() override {
+    ~TcpConnection() {
         std::cout << "TCP connection destroyed!\n";
     }
 
@@ -75,7 +61,6 @@ int main() {
     std::cout << "connected? " << std::boolalpha << conn->isConnected() << '\n';
     // Hết scope: shared_ptr gọi ~TcpConnection() (đúng kiểu) -> an toàn.
 
-    // --- Những dòng dưới đây CỐ Ý không biên dịch được: đó là mục đích ---
     // IConnection* raw = manager.openConnection().get();
     // delete raw;                                  // ❌ ~IConnection() protected
     // std::unique_ptr<IConnection> u =             // ❌ default_delete cần

@@ -323,7 +323,7 @@ public:
     }
 
     // public + virtual: xóa qua TcpConnection* (hoặc lớp con của nó) là hợp lệ
-    ~TcpConnection() override {
+    ~TcpConnection() {
         std::cout << "TCP connection destroyed!\n";
     }
 
