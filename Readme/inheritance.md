@@ -412,3 +412,130 @@ int main() {
     delete shape; // Both destructors called! No leak! 
 }
 ```  
+## Overriding & Overloading  
+
+**virtual keywork**  
+- Without virtual, compiler uses pointer type (static binding)  
+- With virtual, runtime checks actual object type (dynamic binding)  
+
+**override keywork**  
+- Catches typos at compile time  
+- Makes intent clear (this IS an override)  
+- Catches signature mismatches  
+- Better code readability  
+
+**RUNTUME vs COMPILE-TIME polymorphism**  
+- Compile-time: Function overloading  
+- Runtime: virtual functions  
+
+## Virtual  
+
+- Internal mechanism  
+    - Each object with virtual functions has:  
+        - vptr (virtual pointer) - points to vtable  
+    - Each class has:
+        - vtable (virtual table) - array of function ptrs  
+    When calling b->func1():  
+    1. Follow b's vptr to fund vtable  
+    2. Look up func1 in vtable  
+    3. Call the function pointer found  
+
+**Rules**  
+1. Virtual destruction if class has virtual functions  
+2. Pure virtual for interface  
+3. Virtual with default implementation  
+4. Non-virtual for fixed behavior  
+5. Final prevents further overriding  
+
+```cpp  
+class Rules_Base {
+public:
+    virtual ~Rules_Base() {}
+
+    virtual void mustImplement() = 0;
+
+    virtual void canOverride() {
+        cout << "Default implementation" << endl;
+    }
+
+    void dontOverride() {
+        cout << "Fixed behavior - don't override" << endl;
+    }
+
+    virtual void lastLevel() final {
+        cout << "Cannot override thí in derived classes" << endl;
+    }
+};
+
+class Rules_Derived : public Rules_Base {
+public:
+    void mustImplement() override {
+        cout << "Implemented in derived" << endl;
+    }
+
+    void canOverride() override {
+        cout << "Overridden in derived" << endl;
+    }
+
+    // void lastLevel() override {} // ERROR! Marked final in base  
+};
+```  
+
+**Real-World example**  
+
+```cpp  
+class Plugin {
+protected:
+    string name;
+
+public:
+    Plugin(string n) : name(n) {
+
+    }
+
+    virtual void initialize() = 0;
+    virtual void execute() = 0;
+    virtual void cleanup() = 0;
+
+    string getName() { return name; }
+
+    virtual ~Plugin() { }
+};
+
+class LoggerPlugin : public Plugin {
+public:
+    LoggerPlugin() : Plugin("Logger") {
+
+    }
+
+    void initialize() override {
+        cout << "[" << name << "] Initializing logger ..." << endl;
+    }
+
+    void execute() override {
+        cout << "[" << name << "] Logging data ..." << endl;
+    }
+
+    void cleanup() override {
+        cout << "[" << name << "] Closing log files ..." << endl;
+    }
+};
+
+class DatabasePlugin : public Plugin {
+public:
+    DatabasePlugin() : Plugin("Database") { }
+
+    void initialize() override {
+        cout << "[" << name << "] Connecting to database ..." << endl;
+    }
+
+    void execute() override {
+        cout << "[" << name << "] Querying data ..." << endl;
+    }
+
+    void cleanup() override {
+        cout << "[" << name << "] Closing connections ..." << endl;
+    }
+}; 
+```  
+
