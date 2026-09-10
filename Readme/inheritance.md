@@ -349,7 +349,7 @@ public:
     - Base -> Derived  
     - Multiple inheritance: Left -> Right base class -> derived class  
     - The member declared first is initialized first  
-- Destructor: REVERRSE of constructor  
+- Destructor: REVERSE of constructor  
 - Golden rule: if a class is meant to be inherited, ALWAYS make destructor virtual  
 ```cpp  
 class Shape_NoVirtual {
